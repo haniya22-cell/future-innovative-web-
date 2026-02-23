@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday</title>
+
+<style>
+
+body{
+    margin:0;
+    text-align:center;
+    font-family: Arial, sans-serif;
+    /* overflow:hidden; */
+    position:relative;
+
+    /* 👇 YAHAN COLLAGE IMAGE KA NAAM LIKHNA */
+    background: url("emancollage.jpeg");  
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Dark overlay for readability */
+body::before{
+    content:"";
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    z-index: -1;
+
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:-1;
+}
+
+.content{
+    position:relative;
+    z-index:2;
+    padding:20px;
+    margin-top:40px;
+}
+
+h1{
+    opacity:0;
+    font-size:40px;
+    color:white;
+    transition:3s;
+}
+
+img{
+    width:200px;
+    border-radius:20px;
+    margin-top:20px;
+    border:3px solid white;
+}
+
+p{
+    font-size:18px;
+    color:white;
+    margin:20px;
+}
+
+/* CAKE DESIGN */
+
+.cake{
+    margin-top:30px;
+    position:relative;
+}
+
+.cake-body{
+    width:200px;
+    height:100px;
+    background:#ff69b4;
+    margin:0 auto;
+    border-radius:0 0 20px 20px;
+}
+
+.frosting{
+    width:200px;
+    height:40px;
+    background:white;
+    margin:0 auto;
+    border-radius:20px;
+    position:relative;
+    top:20px;
+}
+
+.frosting::before,
+.frosting::after{
+    content:"";
+    position:absolute;
+    width:30px;
+    height:40px;
+    background:white;
+    border-radius:50%;
+    top:20px;
+}
+
+.frosting::before{
+    left:40px;
+}
+
+.frosting::after{
+    right:40px;
+}
+
+.candle{
+    width:10px;
+    height:40px;
+    background:red;
+    margin:0 auto;
+    position:relative;
+    z-index:2;
+}
+
+.flame{
+    width:15px;
+    height:20px;
+    background:orange;
+    border-radius:50%;
+    position:absolute;
+    top:-20px;
+    left:-2px;
+}
+
+video{
+    border-radius:20px;
+    margin-top:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="content">
+
+    <!-- 👇 YAHAN FRIEND IMAGE KA NAAM LIKHNA -->
+    <img src="C:\Users\Lenovo T460 A&I\Desktop\EmanBirthday\pic 3.jpeg" alt="Best Friend">
+
+    <h1 id="title">🎉 Happy Birthday Eman 🎉</h1>
+
+    <p>
+        Wishing you al the very best for upcoming years. Wishing you a very happiest birthday ever. May Your life be folled with happiness, success and endless smiles. You are my most special friend and i am so lucky to have you in my life. May Allah fulfil all your wishes and dreams. May This and upcoming more year bring you a joy and healthy life. May Allah bless you with happy healthy and long life. You deserve all the happines in the world today and always. May this new year of life bring endless success and peace. stay blessed and keep shining.
+      Allah Tallah tumhay hamesha shad o abad rakhy tumhay duniya o akhirat ki tmam khushiyo sy nawazy tumhary dil ki har muraad pori hu tumhay kamiyabi sy hamkinar karen sehat or khushiyo ky sath lambi zindagi ata karen tumhay kabhi koi dukh naw milay tumhari ankehn hamesha khushiyo ma chamky hamesha khush raho ameen
+    </p>
+
+    <div class="cake">
+
+        <div class="candle">
+            <div class="flame" id="flame"></div>
+        </div>
+
+        <div class="frosting"></div>
+        <div class="cake-body"></div>
+
+    </div>
+
+    <div id="videoSection" style="display:none;">
+        <h2 style="color:white;">A Special Surprise For You 💕</h2>
+
+        <!-- 👇 YAHAN VIDEO KA NAAM LIKHNA -->
+        <video width="300" controls>
+            <source src="C:\Users\Lenovo T460 A&I\Desktop\EmanBirthday\video.mp4" type="video/mp4">
+        </video>
+
+    </div>
+
+</div>
+
+<script>
+
+/* Sparkle Animation */
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<120;i++){
+    particles.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        radius:Math.random()*3,
+        dx:(Math.random()-0.5)*2,
+        dy:(Math.random()-0.5)*2
+    });
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="white";
+    particles.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+        ctx.fill();
+        p.x+=p.dx;
+        p.y+=p.dy;
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+
+setTimeout(()=>{
+    document.getElementById("title").style.opacity="1";
+},4000);
+
+navigator.mediaDevices.getUserMedia({audio:true})
+.then(function(stream){
+    const audioContext = new AudioContext();
+    const mic = audioContext.createMediaStreamSource(stream);
+    const analyser = audioContext.createAnalyser();
+    mic.connect(analyser);
+    analyser.fftSize = 256;
+    const data = new Uint8Array(analyser.frequencyBinCount);
+
+    function detectSound(){
+        analyser.getByteFrequencyData(data);
+        let volume = data.reduce((a,b)=>a+b)/data.length;
+
+        if(volume>60){
+            document.getElementById("flame").style.display="none";
+            document.getElementById("videoSection").style.display="block";
+        }
+
+        requestAnimationFrame(detectSound);
+    }
+    detectSound();
+});
+
+</script>
+
+</body>
+</html>
